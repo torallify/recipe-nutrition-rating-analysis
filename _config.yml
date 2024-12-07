@@ -1,3 +1,6 @@
-remote_theme: pages-themes/cayman@v0.2.0
+title: [🍽️ Recipe Nutrition and Rating Analysis]
+description: [Project for EECS 398 at The University of Michigan - Ann Arbor]
+
+theme: jekyll-theme-cayman
 plugins:
 - jekyll-remote-theme 
