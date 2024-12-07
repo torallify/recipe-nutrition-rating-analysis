@@ -1,0 +1,32 @@
+# Jekyll generated site folder
+_site/
+
+# Sass cache
+.sass-cache/
+
+# Temporary files
+*.tmp
+*.log
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Ruby specific
+*.gem
+*.rbc
+.bundle
+vendor/
+Gemfile.lock
+
+# IDE specific
+*.swp
+*.idea/
+*.vscode/
+
+# Node.js (if used for additional tooling)
+node_modules/
+
+# Environment files
+.env
+_site/index.html
