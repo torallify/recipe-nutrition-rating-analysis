@@ -1,0 +1,119 @@
+@import "{{ site.theme }}";
+
+$primary-color: #2E86AB;     
+$accent-color: #28B463;     
+$secondary-color: #F4D03F;  
+$background-color: #F4F6F7; 
+$text-color: #2C3E50;        
+$card-background: #ECF0F1;   
+$success-color: #58D68D;   
+$error-color: #E74C3C;    
+
+
+body {
+  background-color: $background-color;
+  color: $text-color;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $primary-color;
+  font-weight: bold;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+}
+
+a:hover {
+  color: darken($primary-color, 10%);
+}
+
+button {
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: darken($primary-color, 10%);
+}
+
+button.call-to-action {
+  background-color: $accent-color;
+  color: white;
+}
+
+button.call-to-action:hover {
+  background-color: darken($accent-color, 10%);
+}
+
+nav {
+  background-color: $primary-color;
+}
+
+nav a {
+  color: white;
+}
+
+footer {
+  background-color: $primary-color;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.card {
+  background-color: $card-background;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: $primary-color;
+  color: white;
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+  font-weight: bold;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.alert-success {
+  background-color: $success-color;
+  color: white;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.alert-error {
+  background-color: $error-color;
+  color: white;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.call-to-action {
+  background-color: $accent-color;
+  color: white;
+  font-size: 18px;
+  padding: 15px 25px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.call-to-action:hover {
+  background-color: darken($accent-color, 10%);
+}
