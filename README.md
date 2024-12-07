@@ -1,3 +1,1 @@
-# recipe-nutrition-rating-analysis
-
-Recipe Nutrition Rating Analysis
+# Recipe Nutrition Rating Analysis
