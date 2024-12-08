@@ -1,4 +1,4 @@
-# 🍽️ Recipe Nutrition and Rating Analysis
+# 🍽️ Can Nutrition Predict Recipe Ratings?
 *Author: Lucero Toral*
 
 ---
