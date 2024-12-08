@@ -6,12 +6,26 @@
 
 ## Introduction
 
+In this report, I will be analyizing data of recipies and their respective ratings from food.com. The scraped data contains relevent information of the recipes such as: preparation time, relevent tags, nutritional information (total calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV)), recipe steps, and a user submitted description.
+
+In addition, the scrapped data also includes user rating information for each recipe and user submitted review.
+
+The size of each data set are as follows:
+recipes: 83782 rows × 12 columns
+interactions: 731927 rows × 5 columns
+
+
+Having gained an interest in cooking, I am most interested in exploring the nutritional relationship between recipies, ingrediants, with the user ratings.
+
+In this is analysis, I will attempt to answer the question of **"Can we predict how favorable a recipe is by its nutritional information?"**. This is done by predicting the user ratings from the nutritional and tag features of the datasets.
+
 
 
 ## Data Cleaning and Exploratory Data Analysis
 
 ### Data Cleaning
 
+The datasets are cleaned by merging them by recipe id and by calculating the average rating for each recipe.
 
 | **Name**                | **ID**    | **Time (min)** | **Contrib ID** | **Tags**        | **Nutrition**   | **# Steps** | **Steps (First 100 chars)**             | **Description (First 100 chars)**       | **Ingredients (First 100 chars)**       | **# Ingred** | **User ID**    | **Recipe ID**  | **Date**    | **Rating** | **Review (First 100 chars)**            |
 |:------------------------|:---------:|:--------------:|:--------------:|:----------------:|:---------------:|:-----------:|:--------------------------------------:|:-------------------------------------:|:--------------------------------------:|:------------:|:--------------:|:--------------:|:-----------:|:----------:|:--------------------------------------:|
@@ -26,6 +40,8 @@
 
 ### Univariate Analysis
 
+
+
 <iframe
   src="assets/hist_num_ingred.html"
   width="800"
@@ -33,12 +49,16 @@
   frameborder="0"
 ></iframe>
 
+In the first figure, is the distribution of number of ingredients in the recipes. This represent the complexity of each recipe which may influence its percieved flavor profile, as well as influence the overall nutritional values of each recipe.
+
 <iframe
   src="assets/dist_ratings.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
+
+The second figure shows the distribution of average user rating for the recipes. Note that distribution is skewed far to the higher rating, while having a notable amount of zero ratings. This distibution may suggest that the lowest rated recipes may have distinct features within the data.
 
 ### Bivariate Analysis
 
@@ -49,6 +69,8 @@
   frameborder="0"
 ></iframe>
 
+For the third figure, I identify recipes that contain the tag of "healthy" and plot their average rating distributions with violin plots. As we can see, the proportion of 5-star reviews within the data without a "healthy" tag is slightly higher than the distribtion with the tag. This may suggest a high proportion of sweets, desserts, fried, or other recognonized unhealthy foods contributing to high ratings.
+
 ### Interesting Aggregates
 
 | is_healthy   |   count |    mean |     std |   min |   25% |   50% |   75% |   max |
@@ -56,21 +78,110 @@
 | False        |   70051 | 4.3607  | 1.09391 |     0 |     4 |     5 |     5 |     5 |
 | True         |   13730 | 4.32785 | 1.08369 |     0 |     4 |     5 |     5 |     5 |
 
+In the table above, I grouped the rating statistics by whether the recipe is tagged "healthy". The tagged "healthy" recipes have a slighty lower mean rating with a smaller standard deviation to the recipes without the tag. 
+
 | rating_high_low   |   calories |   protein |   sugar |
 |:------------------|-----------:|----------:|--------:|
 | low               |    444.786 |   34.5054 | 71.6494 |
 | high              |    423.548 |   32.5444 | 67.3829 |
 
+Here, I grouped the data by "high" and "low" average ratings and show the average nutritional values of calories, protein, and sugar. The "high" ratings correspond to values of >=4, while the "low" ratings correpond to <4. The lower rated recipes demonstrate slightly higher average calories and sugar level than the highly rated recipes
+
 ### Imputation
 
+
+| **Feature**         | **Missing Values** |
+|---------------------|-------------------|
+| **`name`**           | 1                 |
+| **`id`**             | 0                 |
+| **`minutes`**        | 0                 |
+| **`contributor_id`** | 0                 |
+| **`submitted`**      | 0                 |
+| **`tags`**           | 0                 |
+| **`nutrition`**      | 0                 |
+| **`n_steps`**        | 0                 |
+| **`steps`**          | 0                 |
+| **`description`**    | 114               |
+| **`ingredients`**    | 0                 |
+| **`n_ingredients`**  | 0                 |
+| **`user_id`**        | 1                 |
+| **`recipe_id`**      | 1                 |
+| **`date`**           | 1                 |
+| **`rating`**         | 1                 |
+| **`review`**         | 58                |
+
+This table shows the number of missing values for each column in our combined dataset. 
+We are primarily interest in minutes, tags, nutrition, and rating features.
+
+Since there is only one missing data point in the ratings column, imputation isn't necessary. However, for simplicity we will mean impute the single missing data.
 ## Framing a Prediction Problem
 
-### Problem Identification
+We will train a model to predict recipe rating using the information of nutrition, preparation time, submitted tags, and # of steps from the datasets. 
+
+This a regression problem due to the recipes' average ratings being continous between 0 and 5. (i.e. scores containing off integer values 4.33, 2.57, etc...)
+The evaluation metric used is MAE (Mean average error), this was chosen over other metrics due to its robustness to outliers and easy interpretation.
 
 ## Baseline Model
 
-### Baseline Model
+
+For a baseline model, we train a Linear Regression model that takes in quantitative and nominal features to predict the averave user rating.
+
+The selected quantitative features are:
+
+| **Feature**        | **Description**                                   |
+|--------------------|---------------------------------------------------|
+| **`minutes`**      | Time (in minutes) to prepare the recipe.          |
+| **`calories`**     | Total calories in the recipe.                    |
+| **`total_fat`**    | Total fat content in the recipe.                 |
+| **`sugar`**        | Total sugar content in the recipe.               |
+| **`sodium`**       | Total sodium content in the recipe.              |
+| **`protein`**      | Total protein content in the recipe.             |
+| **`saturated_fat`**| Total saturated fat content.                    |
+| **`carbohydrates`**| Total carbohydrate content in the recipe.       |
+
+These features represent the preparation complexity and nutrional information of the recipes.
+
+The selected catagorical feature:
+
+|**Feature**        | **Description**                                   |
+|-------------------|---------------------------------------------------|
+| **`tags_str`**    | List of tags (like "healthy", "lunch", etc.) |
+
+No ordinal feature were select.
+
+The quantitative features were preprocessed with scikit's StandardScaler, while the catagorical features are encoded with OneHotEncoder, to represent the tags as binary features.
+
+The model performed with a MAE score of 0.760, meaning the prediction is on average off by 0.760. Since the potential score range of 0 - 5, the model is not terribly off but considering Figure 2 that majority ratings are between 4 and 5, the model may not be identifying the lower scores.
+
+
 
 ## Final Model
 
-### Final Model
+
+For the final model, we engineered the following features:
+
+| **Feature Name**             | **How It Was Created**                          | **Why It’s Useful** |
+|-----------------------------|------------------------------------------------|---------------------|
+| **`log_minutes`**             | `log1p(minutes)` (log-transformed)             | Log transformation reduces skew |
+| **`sodium_calorie_ratio`**    | `sodium / (calories + 1e-5)`                    | How much sodium there is relative to total calories, which may influence taste (salty food can have higher or lower ratings). |
+| **`total_fat_calorie_ratio`** | `total_fat / (calories + 1e-5)`                 |  Fatty foods like desserts may be rated differently than leaner recipes. |
+| **`sugar_calorie_ratio`**     | `sugar / (calories + 1e-5)`                     | Tracks how much of the recipe's calories come from sugar. |
+| **`protein_calorie_ratio`**   | `protein / (calories + 1e-5)`                   | Protein may be important to health-conscious users. |
+| **`saturated_fat_calorie_ratio`** | `saturated_fat / (calories + 1e-5)`         | Helps identify recipes with a high proportion of "bad fats" |
+| **`carbohydrates_calorie_ratio`**| `carbohydrates / (calories + 1e-5)`         | Indicates how "carb-dense" the recipe is. (e.g., high-carb desserts vs. low-carb meals). |
+
+The preparation time feature was log scaled to reduce the influence of significant outliers. 
+
+The nutritional features were all scaled with the recipe's total calories. This was chosen because total calories is correlated to nutritional values for each recipe. Therefore, these nutrition ratios provide a better metric of the healthiness each recipe. It will also help highlight the percieved tastes of the recipes, as "saltier" foods would have a higher sodium ratio, "sweeter" foods have a higher sugar to calorie ratio.
+
+We choose to implement the LASSO regression, due to the many catagorical tag features from the OnehotEncoding. LASSO should learn to disregard unimportant features from irrelevant tags. 
+
+We performed a gridsearch of the alpha hyperparameter, with the possible values of [0.01, 0.1, 1]. In addition, we perform cross-validation with 3-folds to validate the optimal alpha value.
+
+The hyperparameter that performed the best was the alpha value of 0.01, which demonstrated a MAE value of 0.756.
+
+The final model with the additional feature engineering is a small improvement over the base line. (MAE 0.756 vs. MAE 0.760)
+Further improvement to the existing model can be done by gridsearching over more hyperparameters and increasing the max iterations from the default 1000 intereations.
+
+Additionally, we have assumed a linear relationship to predict the average ratings. Training a non-linear model such as a Random Forest may have better results.
+
