@@ -184,5 +184,5 @@ The hyperparameter that performed best was alpha = 0.01, which demonstrated an M
 The final model with the additional feature engineering is a small improvement over the base line. (MAE 0.756 vs. MAE 0.760)
 Further improvement to the existing model can be done by gridsearching over more hyperparameters and increasing the max iterations from the default 1000 intereations.
 
-Additionally, we have assumed a linear relationship to predict the average ratings.
+Additionally, we have assumed a linear relationship to predict the average ratings. Training a non-linear model may produce better results.
 
