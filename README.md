@@ -6,18 +6,17 @@
 
 ## Introduction
 
-In this report, I will be analyizing data of recipies and their respective ratings from food.com. The scraped data contains relevent information of the recipes such as: preparation time, relevent tags, nutritional information (total calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV)), recipe steps, and a user submitted description.
+In this report, I will be analyzing data of recipes and their respective ratings from food.com. The scraped data contains relevant information about the recipes such as preparation time, relevant tags, nutritional information (total calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV)), recipe steps, and a user-submitted description.
 
-In addition, the scrapped data also includes user rating information for each recipe and user submitted review.
+In addition, the scraped data also includes user rating information for each recipe and user-submitted reviews.
 
-The size of each data set are as follows:
-recipes: 83782 rows × 12 columns
-interactions: 731927 rows × 5 columns
+The size of each dataset is as follows:
+- Recipes: 83,782 rows × 12 columns
+- Interactions: 731,927 rows × 5 columns
 
+Having gained an interest in cooking, I am most interested in exploring the nutritional relationship between recipes, ingredients, and user ratings.
 
-Having gained an interest in cooking, I am most interested in exploring the nutritional relationship between recipies, ingrediants, with the user ratings.
-
-In this is analysis, I will attempt to answer the question of **"Can we predict how favorable a recipe is by its nutritional information?"**. This is done by predicting the user ratings from the nutritional and tag features of the datasets.
+In this analysis, I will attempt to answer the question, “Can we predict how favorable a recipe is by its nutritional information?” This is done by predicting user ratings using the nutritional and tag features of the datasets.
 
 
 
@@ -25,7 +24,7 @@ In this is analysis, I will attempt to answer the question of **"Can we predict 
 
 ### Data Cleaning
 
-The datasets are cleaned by merging them by recipe id and by calculating the average rating for each recipe.
+The datasets are cleaned by merging them by recipe ID and by calculating the average rating for each recipe.
 
 | **Name**                | **ID**    | **Time (min)** | **Contrib ID** | **Tags**        | **Nutrition**   | **# Steps** | **Steps (First 100 chars)**             | **Description (First 100 chars)**       | **Ingredients (First 100 chars)**       | **# Ingred** | **User ID**    | **Recipe ID**  | **Date**    | **Rating** | **Review (First 100 chars)**            |
 |:------------------------|:---------:|:--------------:|:--------------:|:----------------:|:---------------:|:-----------:|:--------------------------------------:|:-------------------------------------:|:--------------------------------------:|:------------:|:--------------:|:--------------:|:-----------:|:----------:|:--------------------------------------:|
@@ -49,7 +48,7 @@ The datasets are cleaned by merging them by recipe id and by calculating the ave
   frameborder="0"
 ></iframe>
 
-In the first figure, is the distribution of number of ingredients in the recipes. This represent the complexity of each recipe which may influence its percieved flavor profile, as well as influence the overall nutritional values of each recipe.
+In the first figure, we see the distribution of the number of ingredients in the recipes. This represents the complexity of each recipe, which may influence its perceived flavor profile, as well as the overall nutritional values of each recipe.
 
 <iframe
   src="assets/dist_ratings.html"
@@ -69,7 +68,7 @@ The second figure shows the distribution of average user rating for the recipes.
   frameborder="0"
 ></iframe>
 
-For the third figure, I identify recipes that contain the tag of "healthy" and plot their average rating distributions with violin plots. As we can see, the proportion of 5-star reviews within the data without a "healthy" tag is slightly higher than the distribtion with the tag. This may suggest a high proportion of sweets, desserts, fried, or other recognonized unhealthy foods contributing to high ratings.
+For the third figure, I identify recipes that contain the tag of "healthy" and plot their average rating distributions using violin plots. As we can see, the proportion of 5-star reviews within the data without a "healthy" tag is slightly higher than the distribtion with the tag. This may suggest a high proportion of sweets, desserts, fried, or other recognonized unhealthy foods contributing to high ratings.
 
 ### Interesting Aggregates
 
@@ -114,17 +113,19 @@ This table shows the number of missing values for each column in our combined da
 We are primarily interest in minutes, tags, nutrition, and rating features.
 
 Since there is only one missing data point in the ratings column, imputation isn't necessary. However, for simplicity we will mean impute the single missing data.
+
 ## Framing a Prediction Problem
 
 We will train a model to predict recipe rating using the information of nutrition, preparation time, submitted tags, and # of steps from the datasets. 
 
 This a regression problem due to the recipes' average ratings being continous between 0 and 5. (i.e. scores containing off integer values 4.33, 2.57, etc...)
-The evaluation metric used is MAE (Mean average error), this was chosen over other metrics due to its robustness to outliers and easy interpretation.
+
+The evaluation metric used is MAE (Mean Absolute Error), this was chosen over other metrics due to its robustness to outliers and easy interpretation.
 
 ## Baseline Model
 
 
-For a baseline model, we train a Linear Regression model that takes in quantitative and nominal features to predict the averave user rating.
+For a baseline model, we train a Linear Regression model that takes in quantitative and nominal features to predict the average user rating.
 
 The selected quantitative features are:
 
@@ -147,7 +148,7 @@ The selected catagorical feature:
 |-------------------|---------------------------------------------------|
 | **`tags_str`**    | List of tags (like "healthy", "lunch", etc.) |
 
-No ordinal feature were select.
+No ordinal features were selected.
 
 The quantitative features were preprocessed with scikit's StandardScaler, while the catagorical features are encoded with OneHotEncoder, to represent the tags as binary features.
 
@@ -178,7 +179,7 @@ We choose to implement the LASSO regression, due to the many catagorical tag fea
 
 We performed a gridsearch of the alpha hyperparameter, with the possible values of [0.01, 0.1, 1]. In addition, we perform cross-validation with 3-folds to validate the optimal alpha value.
 
-The hyperparameter that performed the best was the alpha value of 0.01, which demonstrated a MAE value of 0.756.
+The hyperparameter that performed best was alpha = 0.01, which demonstrated an MAE value of 0.756.
 
 The final model with the additional feature engineering is a small improvement over the base line. (MAE 0.756 vs. MAE 0.760)
 Further improvement to the existing model can be done by gridsearching over more hyperparameters and increasing the max iterations from the default 1000 intereations.
